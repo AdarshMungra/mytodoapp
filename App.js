@@ -11,6 +11,12 @@ import {
 
 import Constants from "expo-constants";
 import * as SQLite from "expo-sqlite";
+import { create } from "zustand";
+
+const useStore = create((set) => ({
+  items: [],
+  setItems: (items) => set({ items }),
+}));
 
 function openDatabase() {
   if (Platform.OS === "web") {
@@ -36,14 +42,14 @@ function openDatabase() {
 const db = openDatabase();
 
 function Items({ done: doneHeading, onPressItem }) {
-  const [items, setItems] = useState(null);
+  const items = useStore((state) => state.items);
 
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
         `select * from items where done = ?;`,
         [doneHeading ? 1 : 0],
-        (_, { rows: { _array } }) => setItems(_array)
+        (_, { rows: { _array } }) => useStore.setState({ items: _array })
       );
     });
   }, []);
@@ -83,7 +89,7 @@ function Items({ done: doneHeading, onPressItem }) {
             <Text style={{ color: done ? "#fff" : "#000" }}>{value}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleDelete(id)}>
-            <Text style={styles.deleteButton}>X</Text>
+            <Text style={styles.deleteButton}>❌</Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -193,7 +199,7 @@ export default function App() {
                 color: "blue",
               }}
             >
-              {showLogs ? "Back to Todos" : "View Logs"}
+              {showLogs ? "Back to Todos" : "View Completed"}
             </Text>
           </TouchableOpacity>
         </>
