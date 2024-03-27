@@ -9,25 +9,54 @@ import {
 } from "react-native";
 
 import Constants from "expo-constants";
+import * as SQLite from "expo-sqlite";
 import { create } from "zustand";
+import { persist, createSQLiteStorage } from "zustand/middleware";
 
-const useStore = create((set) => ({
-  items: [],
-  addItem: (value) =>
-    set((state) => ({
-      items: [...state.items, { id: Date.now(), done: false, value }],
-    })),
-  toggleItem: (id) =>
-    set((state) => ({
-      items: state.items.map((item) =>
-        item.id === id ? { ...item, done: !item.done } : item
-      ),
-    })),
-  deleteItem: (id) =>
-    set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
-    })),
-}));
+const db = SQLite.openDatabase("mytodoapp.db");
+
+const storage = {
+  getItem: async (name) => {
+    console.log(name, "has been retrieved");
+    return (await get(name)) || null;
+  },
+
+  setItem: async (name, value) => {
+    console.log(name, "with value", value, "has been saved");
+    await set(name, value);
+  },
+
+  removeItem: async (name) => {
+    console.log(name, "has been deleted");
+    await del(name);
+  },
+};
+
+const useStore = create(
+  persist(
+    (set) => ({
+      items: [],
+      addItem: (value) =>
+        set((state) => ({
+          items: [...state.items, { id: Date.now(), done: false, value }],
+        })),
+      toggleItem: (id) =>
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id ? { ...item, done: !item.done } : item
+          ),
+        })),
+      deleteItem: (id) =>
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== id),
+        })),
+    }),
+    {
+      name: "item-storage",
+      Storage: () => createSQLiteStorage(() => storage),
+    }
+  )
+);
 
 function Items({ done: doneHeading, onPressItem, deleteItem }) {
   const [done, setDone] = useState(doneHeading);
