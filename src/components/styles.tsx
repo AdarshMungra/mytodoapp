@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native";
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
+    // paddingTop: Constants.statusBarHeight,
+    paddingTop: 20,
     paddingHorizontal: 16,
     backgroundColor: "#fff",
   },
@@ -85,3 +86,5 @@ export default StyleSheet.create({
     marginLeft: 8,
   },
 });
+
+export default styles;
