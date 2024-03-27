@@ -11,7 +11,7 @@ import {
 import Constants from "expo-constants";
 import * as SQLite from "expo-sqlite";
 import { create } from "zustand";
-import { persist, createSQLiteStorage } from "zustand/middleware";
+import { persist, createSQLiteStorage, StateStorage } from "zustand/middleware";
 
 const db = SQLite.openDatabase("mytodoapp.db");
 
