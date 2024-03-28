@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
+import { persist, createJSONStorage} from "zustand/middleware";
+import { db } from "../database/database";
 
 interface Item {
   id: number;
@@ -15,19 +16,26 @@ interface Actions {
   updateItem: (id: number, newValue: string) => void;
 }
 
+
+//this not good , doesnot exist ? get , set , del 
 const storage = {
   getItem: async (name: string): Promise<any> => {
     console.log(`${name} has been retrieved`);
+    //update here
+    
   },
   setItem: async (name: string, value: any): Promise<void> => {
     console.log(`${name} with value ${value} has been saved`);
+    //update here
   },
   removeItem: async (name: string): Promise<void> => {
     console.log(`${name} has been deleted`);
+    //update here 
   },
 };
 
 
+//this is probally good 
 export const useItemStore = create<Actions>()(
   persist(
     (set) => ({
@@ -53,6 +61,8 @@ export const useItemStore = create<Actions>()(
           ),
         })),
     }),
+
+    //this part not good 
     {
       name: "item-store",
       storage: createJSONStorage(() => storage),
