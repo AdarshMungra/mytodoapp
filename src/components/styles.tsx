@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: Constants.statusBarHeight,
     paddingTop: 20,
     paddingHorizontal: 16,
     backgroundColor: "#fff",
@@ -13,7 +12,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   subheading: {
     marginTop: 32,
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 2,
   },
   input: {
     borderColor: "black",
@@ -52,8 +51,11 @@ const styles = StyleSheet.create({
   listArea: {
     backgroundColor: "#f0f0f0",
     flex: 1,
-    padding: 16,
+    padding: 12,
     borderRadius: 8,
+    marginBottom:8,
+    borderColor: "black",
+    borderWidth: 1,
   },
   sectionContainer: {
     marginBottom: 16,

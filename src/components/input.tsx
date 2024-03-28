@@ -1,6 +1,6 @@
 import React from "react";
 import { TextInput, TouchableOpacity, Text, View } from "react-native";
-import styles from "./styles"; // Make sure to adjust the import path based on your project structure
+import styles from "./styles"; 
 
 interface InputProps {
   text: string;
