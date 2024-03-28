@@ -24,9 +24,9 @@ const ItemsList: React.FC<ItemsListProps> = ({ items, onPressItem, deleteItem })
             style={{
               backgroundColor: done ? "#1c9983" : "#fff",
               borderColor: "#000",
-              borderWidth: 1,
-              borderRadius: 16,
-              padding: 10,
+              // borderWidth: 1,
+              borderRadius: 8,
+              padding:12,
               flex: 1,
             }}
           >

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 
 interface Item {
   id: number;
@@ -15,7 +15,18 @@ interface Actions {
   updateItem: (id: number, newValue: string) => void;
 }
 
-const jsonStorage = createJSONStorage(() => localStorage);
+const storage = {
+  getItem: async (name: string): Promise<any> => {
+    console.log(`${name} has been retrieved`);
+  },
+  setItem: async (name: string, value: any): Promise<void> => {
+    console.log(`${name} with value ${value} has been saved`);
+  },
+  removeItem: async (name: string): Promise<void> => {
+    console.log(`${name} has been deleted`);
+  },
+};
+
 
 export const useItemStore = create<Actions>()(
   persist(
@@ -44,7 +55,7 @@ export const useItemStore = create<Actions>()(
     }),
     {
       name: "item-store",
-      storage: jsonStorage, 
+      storage: createJSONStorage(() => storage),
     }
   )
 );
