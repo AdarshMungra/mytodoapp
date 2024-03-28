@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage, PersistStorage } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface Item {
   id: number;
@@ -14,6 +14,8 @@ interface Actions {
   deleteItem: (id: number) => void;
   updateItem: (id: number, newValue: string) => void;
 }
+
+const jsonStorage = createJSONStorage(() => localStorage);
 
 export const useItemStore = create<Actions>()(
   persist(
@@ -42,10 +44,9 @@ export const useItemStore = create<Actions>()(
     }),
     {
       name: "item-store",
-        //use the storagea
+      storage: jsonStorage, 
     }
   )
 );
 
 export default useItemStore;
-
