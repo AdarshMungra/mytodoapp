@@ -1,6 +1,6 @@
-import { StorageValue } from "zustand/middleware";
-import * as TodosRepository from "../database/repository";
-
+import { StorageValue } from 'zustand/middleware';
+import * as TodosRepository from '../database/repository';
+import { tryAsync } from '@eznix/try';
 interface Item {
 	id: number;
 	done: boolean;
@@ -9,7 +9,9 @@ interface Item {
 
 type SQLiteStorageType = StorageValue<{ items: Item[] }>;
 
-function findNewItems(items: Item[], stored: Item[]): Item[] {
+async function findNewItems(items: Item[]): Promise<Item[]> {
+	const result = await tryAsync<Item[]>(TodosRepository.findAll);
+	const stored = await result.getOrElse([]);
 	return items.filter((item) => {
 		return !stored.find((element) => element.id === item.id);
 	});
@@ -17,13 +19,22 @@ function findNewItems(items: Item[], stored: Item[]): Item[] {
 
 async function insertNewItems(items: Item[]): Promise<void> {
 	for (const item of items) {
-		await TodosRepository.insertItem(item.id.toString(), item.value, item.done);
+		await TodosRepository.insertItem(
+			item.id.toString(),
+			item.value,
+			item.done,
+		);
 	}
 }
 
-function findItemsToDelete(items: Item[], stored: Item[]): Item[] {
+async function findItemsToDelete(itemsFromMemory: Item[]): Promise<Item[]> {
+	const result = await tryAsync<Item[]>(TodosRepository.findAll);
+	const stored = await result.getOrElse([]);
+	// return diff from memory and stored
 	return stored.filter((item) => {
-		return !items.find((element) => element.id === item.id);
+		return !itemsFromMemory.find(
+			(element) => +element.id === +item.id,
+		);
 	});
 }
 
@@ -33,31 +44,50 @@ async function deleteItems(items: Item[]): Promise<void> {
 	}
 }
 
-function findItemsToUpdate(items: Item[], stored: Item[]): Item[] {
+async function findItemsToUpdate(items: Item[]): Promise<Item[]> {
+	const result = await tryAsync<Item[]>(TodosRepository.findAll);
+	const stored = await result.getOrElse([]);
+
 	return items.filter((item) => {
 		return stored.find(
-			(element) => element.id === item.id && element.done !== item.done,
+			(element) =>
+				+element.id === +item.id &&
+				element.done !== item.done,
 		);
 	});
 }
 
 async function updateItems(items: Item[]): Promise<void> {
 	for (const item of items) {
-		await TodosRepository.updateItem(item.id, item.value, item.done);
+		await TodosRepository.updateItem(
+			item.id,
+			item.value,
+			item.done,
+		);
 	}
 }
 
 export async function syncTodos(value: string) {
 	const state = JSON.parse(value) as SQLiteStorageType;
 
-	const stored = await TodosRepository.findAll();
+	const diff = await findNewItems(state.state.items);
+	console.log({ diff });
 
-	const diff = findNewItems(state.state.items, stored);
 	await insertNewItems(diff);
 
-	const toDelete = findItemsToDelete(state.state.items, stored);
+	const toUpdate = await findItemsToUpdate(state.state.items);
+
+	console.log({ toUpdate });
+
+	await updateItems(toUpdate);
+
+	const toDelete = await findItemsToDelete(state.state.items);
+
+	console.log({ toDelete });
+
 	await deleteItems(toDelete);
 
-	const toUpdate = findItemsToUpdate(state.state.items, stored);
-	await updateItems(toUpdate);
+	const verify = await tryAsync<Item[]>(TodosRepository.findAll);
+
+	console.log(await verify.getOrElse([]));
 }
