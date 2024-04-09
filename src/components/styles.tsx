@@ -28,20 +28,27 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   input: {
-    borderColor: "black",
+    borderColor: "#d3d3d3",
     borderRadius: 24,
     borderWidth: 1,
     flex: 1,
     height: 48,
     padding: 16,
-    marginRight: 16,
+    marginRight: 6,
+    marginTop: 32,
     backgroundColor: '#e1e1e1',
+    shadowColor: '#000', // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset
+    shadowOpacity: 1, // Shadow opacity
+    shadowRadius: 8, // Shadow radius
   },
   addBtn: {
-    backgroundColor: "black",
+    marginTop: 32,
+    backgroundColor: "#949494",
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 24,
+    height: 48,
   },
   addBtnText: {
     color: "#fff",
@@ -53,9 +60,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     borderRadius: 8,
-    marginBottom:8,
-    borderColor: "black",
+    marginBottom: 24,
+    borderColor: "#d3d3d3",
     borderWidth: 1,
+    shadowColor: '#000', // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset
+    shadowOpacity: 1, // Shadow opacity
+    shadowRadius: 8, // Shadow radius
   },
   sectionContainer: {
     marginBottom: 16,

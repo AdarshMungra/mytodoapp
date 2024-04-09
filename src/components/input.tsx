@@ -19,7 +19,7 @@ const Input: React.FC<InputProps> = ({ text, onChangeText, onSubmitEditing }) =>
         value={text}
       />
       <TouchableOpacity onPress={onSubmitEditing}>
-        <Text>Add</Text>
+        <Text style={styles.addBtn}>Add</Text>
       </TouchableOpacity>
     </View>
   );
